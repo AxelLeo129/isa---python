@@ -1,13 +1,18 @@
 import speech_recognition as sr
-import pyttsx3, pywhatkit, wikipedia, datetime, keyword
-from pygame import mixer
+import pyttsx3, pywhatkit, wikipedia, os
+import subprocess as sub
 
 name = 'isa'
 listener = sr.Recognizer()
 engine = pyttsx3.init()
-
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
+sites = {
+    'google': 'google.com',
+    'youtube': 'youtube.com',
+    'facebook': 'facebook',
+    'whastapp': 'web.whatsapp.com'
+}
 
 def talk(text):
     engine.say(text)
@@ -44,6 +49,12 @@ def run():
                 wiki = wikipedia.summary(search, 1)
                 print(search + ": " + wiki)
                 talk(wiki)
+
+            elif 'open' in rec:
+                for site in sites:
+                    if site in rec:
+                        sub.call(f'start chrome.exe {sites[site]}', shell=True)
+                        talk(f'Opening {sites[site]}')
         except:
             talk("I dont understand, please try again...")
 
